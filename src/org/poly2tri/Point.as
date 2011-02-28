@@ -94,6 +94,10 @@ package org.poly2tri {
 			return uniqueList;
 		}
 		
+		static public function middle(a:Point, b:Point):Point {
+			return new Point((a.x + b.x) / 2, (a.y + b.y) / 2);
+		}
+		
 		static public function sortPoints(points:Vector.<Point>):void {
 			points.sort(cmpPoints);
 		}

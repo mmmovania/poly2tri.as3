@@ -108,6 +108,40 @@ package org.poly2tri {
 			}
 			throw(new Error("Point not in triangle"));
 		}
+		
+		/**
+		 * Alias for containsPoint
+		 *
+		 * @param	p
+		 * @return
+		 */
+		public function isPointAVertex(p:Point):Boolean {
+			return containsPoint(p);
+			//for (var n:uint = 0; n < 3; n++) if (p.equals[this.points[n]]) return true;
+			//return false;
+		}
+		
+		static public function getNotCommonVertexIndex(t1:Triangle, t2:Triangle):int {
+			var sum:int = 0, index:int = -1;
+			if (!t2.containsPoint(t1.points[0])) { index = 0; sum++; }
+			if (!t2.containsPoint(t1.points[1])) { index = 1; sum++; }
+			if (!t2.containsPoint(t1.points[2])) { index = 2; sum++; }
+			if (sum != 1) throw(new Error("Triangles are not contiguous"));
+			return index;
+		}
+		
+		static public function getNotCommonVertex(t1:Triangle, t2:Triangle):Point {
+			return t1.points[getNotCommonVertexIndex(t1, t2)];
+		}
+		
+		static public function getCommonEdge(t1:Triangle, t2:Triangle):Edge {
+			var commonIndexes:Vector.<Point> = new Vector.<Point>();
+			for each (var point:Point in t1.points) {
+				if (t2.containsPoint(point)) commonIndexes.push(point);
+			}
+			if (commonIndexes.length != 2) throw(new Error("Triangles are not contiguous"));
+			return new Edge(commonIndexes[0], commonIndexes[1]);
+		}
 
 		/**
 		 * Return the point clockwise to the given point.
@@ -357,6 +391,21 @@ package org.poly2tri {
 			}
 		}
 		
+		public function pointInsideTriangle(pp:Point):Boolean {
+			var p1:Point = points[0];
+			var p2:Point = points[1];
+			var p3:Point = points[2];
+			if (_product(p1, p2, p3) >= 0) {
+				return (_product(p1, p2, pp) >= 0) && (_product(p2, p3, pp)) >= 0 && (_product(p3, p1, pp) >= 0);
+			} else {
+				return (_product(p1, p2, pp) <= 0) && (_product(p2, p3, pp)) <= 0 && (_product(p3, p1, pp) <= 0);
+			}
+		}
+
+		static private function _product(p1:Point, p2:Point, p3:Point):Number {
+			return (p1.x - p3.x) * (p2.y - p3.y) - (p1.y - p3.y) * (p2.x - p3.x);
+		}
+
 		public function toString():String {
 			return "Triangle(" + this.points[0] + ", " + this.points[1] + ", " + this.points[2] + ")";
 		}

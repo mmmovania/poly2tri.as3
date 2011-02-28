@@ -32,6 +32,10 @@ package org.poly2tri {
 			this.q.edge_list.push(this);
 		}
 		
+		public function hasPoint(point:Point):Boolean {
+			return p.equals(point) || q.equals(point);
+		}
+		
 		static public function getUniquePointsFromEdges(edges:Vector.<Edge>):Vector.<Point> {
 			var edge:Edge;
 			var point:Point;
